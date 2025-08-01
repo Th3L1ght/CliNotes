@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CliNotes.Migrations
 {
     [DbContext(typeof(NotesDbContext))]
-    [Migration("20250801142848_InitialCreate")]
+    [Migration("20250801151009_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -53,10 +53,7 @@ namespace CliNotes.Migrations
             modelBuilder.Entity("CliNotes.User", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
