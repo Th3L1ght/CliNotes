@@ -2,20 +2,24 @@
 {
     public class UserService
     {
+        private readonly NotesDbContext _context;
+
+        public UserService(NotesDbContext context)
+        {
+            _context = context;
+        }
+
         public User FindOrCreateUser(int userId)
         {
-            using (var db = new NotesDbContext())
-            {
-                var user = db.Users.Find(userId);
+            var user = _context.Users.Find(userId);
 
-                if(user == null)
-                {
-                    user = new User(userId);
-                    db.Users.Add(user);
-                    db.SaveChanges();
-                }
-                return user;
+            if (user == null)
+            {
+                user = new User(userId);
+                _context.Users.Add(user);
+                _context.SaveChanges();
             }
+            return user;
         }
     }
 }

@@ -2,46 +2,45 @@
 {
     public class NoteService
     {
+        private readonly NotesDbContext _context;
+
+        public NoteService(NotesDbContext context)
+        {
+            _context = context;
+        }
+
         public void AddNote(int userId, string content)
         {
-            using (var db = new NotesDbContext())
+            var user = _context.Users.Find(userId);
+            var note = new Note
             {
-                var user = db.Users.Find(userId);
-                var note = new Note
-                {
-                    Content = content,
-                    CreationDate = DateTime.UtcNow,
-                    User = user
-                };
-                db.Notes.Add(note);
-                db.SaveChanges();
-            }
+                Content = content,
+                CreationDate = DateTime.UtcNow,
+                User = user
+            };
+            _context.Notes.Add(note);
+            _context.SaveChanges();
         }
 
         public List<Note> GetNotes(int userId)
         {
-            using (var db = new NotesDbContext())
-            {
-                return db.Notes
-                    .Where(n => n.UserId == userId)
-                    .OrderByDescending(n => n.CreationDate)
-                    .ToList();
-            }
+
+            return _context.Notes
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreationDate)
+                .ToList();
         }
 
         public bool DeleteNote(int userId, int noteId)
         {
-            using (var db = new NotesDbContext())
+            var note = _context.Notes.Find(noteId);
+            if (note != null && note.UserId == userId)
             {
-                var note = db.Notes.Find(noteId);
-                if(note != null && note.UserId == userId)
-                {
-                    db.Notes.Remove(note);
-                    db.SaveChanges();
-                    return true;
-                }
-                else return false;
+                _context.Notes.Remove(note);
+                _context.SaveChanges();
+                return true;
             }
+            else return false;
         }
     }
 }

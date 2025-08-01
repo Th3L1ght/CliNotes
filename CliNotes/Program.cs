@@ -4,37 +4,40 @@
     {
         static void Main(string[] args)
         {
-            UserService userService = new UserService();
-            NoteService noteService = new NoteService();
-
-            Greeting();
-            int userId = UserAuth(userService);
-
-            while (true)
+            using (var context = new NotesDbContext())
             {
-                Console.WriteLine("Choose the operation: ");
-                Console.WriteLine("1. Create new note.");
-                Console.WriteLine("2. Delete my note.");
-                Console.WriteLine("3. Check all my notes.");
-                Console.WriteLine("Enter \"exit\" to quit the program.");
+                UserService userService = new UserService(context);
+                NoteService noteService = new NoteService(context);
 
-                switch (Console.ReadLine())
+                Greeting();
+                int userId = UserAuth(userService);
+
+                while (true)
                 {
-                    case "1":
-                        HandleAddNote(noteService, userId);
-                        break;
-                    case "2":
-                        HandleDeleteNote(noteService, userId);
-                        break;
-                    case "3":
-                        HandleGetNotes(noteService, userId);
-                        break;
-                    case "exit":
-                        return;
-                    default:
-                        Console.Clear();
-                        ErrorWrite("Wrong operation!");
-                        break;
+                    Console.WriteLine("Choose the operation: ");
+                    Console.WriteLine("1. Create new note.");
+                    Console.WriteLine("2. Delete my note.");
+                    Console.WriteLine("3. Check all my notes.");
+                    Console.WriteLine("Enter \"exit\" to quit the program.");
+
+                    switch (Console.ReadLine())
+                    {
+                        case "1":
+                            HandleAddNote(noteService, userId);
+                            break;
+                        case "2":
+                            HandleDeleteNote(noteService, userId);
+                            break;
+                        case "3":
+                            HandleGetNotes(noteService, userId);
+                            break;
+                        case "exit":
+                            return;
+                        default:
+                            Console.Clear();
+                            ErrorWrite("Wrong operation!");
+                            break;
+                    }
                 }
             }
         }
